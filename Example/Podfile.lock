@@ -1,0 +1,43 @@
+PODS:
+  - Alamofire (5.4.1)
+  - Cache (5.3.0)
+  - Logging (1.4.0)
+  - Moya (14.0.0):
+    - Moya/Core (= 14.0.0)
+  - Moya/Core (14.0.0):
+    - Alamofire (~> 5.0)
+  - YQLogger (0.1.0):
+    - Logging (~> 1.4)
+  - YQNetworking (0.1.0):
+    - Cache
+    - Moya
+    - YQLogger
+
+DEPENDENCIES:
+  - YQLogger (from `../../YQLogger`)
+  - YQNetworking (from `../`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - Cache
+    - Logging
+    - Moya
+
+EXTERNAL SOURCES:
+  YQLogger:
+    :path: "../../YQLogger"
+  YQNetworking:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
+  Cache: 48762993ec44e1d93483c4d4a13edd18452326f4
+  Logging: beeb016c9c80cf77042d62e83495816847ef108b
+  Moya: 5b45dacb75adb009f97fde91c204c1e565d31916
+  YQLogger: 242e16ef37d8bdc7216e099dc495d4f6d80c0369
+  YQNetworking: f199bbdc251fdcafa49bfaabcbcb2eb73a5b4c5b
+
+PODFILE CHECKSUM: 0601a0e8e5171f218a86af90998f7312a42bd8f7
+
+COCOAPODS: 1.10.0
