@@ -22,7 +22,7 @@ pod 'YQNetworking'
 
 ## Author
 
-wyqpadding@gmail.com, wyqpadding@gmail.com
+wyqpadding@gmail.com
 
 ## License
 
