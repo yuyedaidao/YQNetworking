@@ -29,34 +29,7 @@ public protocol ResponseValidatable {
 
 public extension ResponseValidatable {
     func validateResponse(_ response: Response, dataOnly: Bool = false) -> ValidationResult {
-        return Self.defaultValidateResponse(response, dataOnly: dataOnly)
-    }
-
-    static func defaultValidateResponse(_ response: Response, dataOnly: Bool = false) -> ValidationResult {
-        do {
-            let _response: Response
-            if dataOnly {
-                _response = response
-            } else {
-                _response = try response.filter(statusCode: 200)
-            }
-            guard let value = try _response.mapJSON() as? NetworkMap else {
-                return .failure(MoyaError.underlying(NetworkError(.unexpected), response))
-            }
-            let code = value["code"] as? Int ?? NetworkError.Code.unknown.rawValue
-            guard code == 1 else {
-                let message = value["errmsg"] as? String ?? ""
-                return .failure(MoyaError.underlying(NetworkError(NetworkError.Code(code), message: message.isEmpty ? nil : message), response))
-            }
-            let data = value["data"]
-            return .success(ValidationResponse(originalValue: value, validValue: data))
-        } catch {
-            if let error = error as? MoyaError {
-                return .failure(error)
-            } else {
-                return .failure(MoyaError.underlying(error, response))
-            }
-        }
+        return Self.simpleValidateResponse(response, dataOnly: dataOnly)
     }
 
     static func simpleValidateResponse(_ response: Response, dataOnly: Bool = false) -> ValidationResult {
@@ -65,7 +38,7 @@ public extension ResponseValidatable {
             if dataOnly {
                 _response = response
             } else {
-                _response = try response.filter(statusCode: 200)
+                _response = try response.filterSuccessfulStatusCodes()
             }
             let value = try _response.mapJSON()
             return .success(ValidationResponse(originalValue: value, validValue: value))

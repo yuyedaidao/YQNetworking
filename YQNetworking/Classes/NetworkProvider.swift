@@ -16,15 +16,10 @@ public class NetworkProvider: MoyaProvider<MultiTarget> {
     
     public static let shared = NetworkProvider()
     let extraEndpointClosures: [ExtraEndpointClosure]
+    public var failureMap: ((Error) -> Error) = { $0 }
     private init(plugins: [PluginType] = []) {
         var plugins = plugins
         plugins.append(contentsOf: NetworkPlugins.shared.values)
-        #if DEBUG
-        var configuration = NetworkLoggerPlugin.Configuration()
-        configuration.logOptions = [.requestMethod, .successResponseBody, .errorResponseBody]
-        plugins.append(NetworkLoggerPlugin(configuration: configuration))
-        #endif
-        plugins.append(TimeoutPlugin())
         extraEndpointClosures = NetworkPlugins.shared.extraEndpointClosures
         super.init(stubClosure: { target -> StubBehavior in
             guard let target = target.target as? RequestMockable else {

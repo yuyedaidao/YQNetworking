@@ -8,9 +8,7 @@
 
 import Alamofire
 import Foundation
-import Logging
 import Moya
-import YQLogger
 
 public extension Notification.Name { // TODO: 这个的保留还是有一点耦合性，以后优化，完全可以去掉
     static let needLogin: Self = Notification.Name("com.yq.networking.needLogin")
@@ -34,10 +32,7 @@ extension NetworkProviderType {
     }
 }
 
-public protocol RequestTarget: TargetType & ResponseValidatable & RequestMockable & NetworkProviderType {}
-
-var _log = Logger(label: "YQNetworking")
-var log = YQLogger(_log)
+public protocol RequestTarget: TargetType & ResponseValidatable & ResponseDecodable & RequestMockable & NetworkProviderType {}
 
 public extension DispatchQueue {
     static let yqNetworking = DispatchQueue(label: "YQNetworkingCallBack")
@@ -86,24 +81,24 @@ public extension RequestTarget {
                             performExtraEndpointClousersSuccess(self, response: response, value: value.originalValue)
                         }
                     case .failure(let error):
-                        log.error(error)
+                        print(error)
                         if case let MoyaError.underlying(err, _) = error {
-                            failure?(err)
+                            failure?(err.providerMap())
                             DispatchQueue.main.async {
                                 performExtraEndpointClousersFailure(self, error: err)
                             }
                         } else {
-                            failure?(error)
+                            failure?(error.providerMap())
                             DispatchQueue.main.async {
                                 performExtraEndpointClousersFailure(self, error: error)
                             }
                         }
                     }
                 case let .failure(error):
-                    log.error(error)
+                    print(error)
                     if case let MoyaError.underlying(err, _) = error {
                         guard let afError = err.asAFError else {
-                            failure?(err)
+                            failure?(err.providerMap())
                             DispatchQueue.main.async {
                                 performExtraEndpointClousersFailure(self, error: err)
                             }
@@ -114,23 +109,23 @@ public extension RequestTarget {
                             guard !ignoreCancel else {
                                 break
                             }
-                            failure?(err)
+                            failure?(err.providerMap())
                             DispatchQueue.main.async {
                                 performExtraEndpointClousersFailure(self, error: err)
                             }
                         case .sessionTaskFailed(let error):
-                            failure?(error)
+                            failure?(error.providerMap())
                             DispatchQueue.main.async {
                                 performExtraEndpointClousersFailure(self, error: error)
                             }
                         default:
-                            failure?(err)
+                            failure?(err.providerMap())
                             DispatchQueue.main.async {
                                 performExtraEndpointClousersFailure(self, error: err)
                             }
                         }
                     } else {
-                        failure?(error)
+                        failure?(error.providerMap())
                         DispatchQueue.main.async {
                             performExtraEndpointClousersFailure(self, error: error)
                         }
@@ -155,15 +150,15 @@ public extension RequestTarget {
             queue.async {
                 guard let json = result as? NetworkMap else {
                     let error = NetworkError(.unexpected)
-                    log.error(error)
-                    failure?(error)
+                    print(error)
+                    failure?(error.providerMap())
                     return
                 }
                 successMap?(json)
             }
         }, failure: { error in
             queue.async {
-                failure?(error)
+                failure?(error.providerMap())
             }
         }, ignoreCancel: ignoreCancel)
     }
@@ -181,9 +176,9 @@ public extension RequestTarget {
         }, success: { result in
             guard let json = result as? NetworkArray else {
                 let error = NetworkError(.unexpected)
-                log.error(error)
+                print(error)
                 queue.async {
-                    failure?(error)
+                    failure?(error.providerMap())
                 }
                 return
             }
@@ -192,7 +187,7 @@ public extension RequestTarget {
             }
         }, failure: { error in
             queue.async {
-                failure?(error)
+                failure?(error.providerMap())
             }
         }, ignoreCancel: ignoreCancel)
     }
@@ -210,52 +205,44 @@ public extension RequestTarget {
             }
             do {
                 let data = try JSONSerialization.data(withJSONObject: value)
-                let decoder = JSONDecoder()
-                let formatter = DateFormatter()
-                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                decoder.dateDecodingStrategy = .formatted(formatter)
                 let result = try decoder.decode(T.self, from: data)
                 queue.async {
                     cachedResult?(result)
                 }
-            } catch {
-                log.error(error)
+            } catch let error {
+                print(error)
             }
             
         }, success: { value in
             guard let value = value else {
                 let error = NetworkError("空数据")
-                log.error(error)
+                print(error)
                 queue.async {
-                    failure?(error)
+                    failure?(error.providerMap())
                 }
                 return
             }
             guard JSONSerialization.isValidJSONObject(value) else {
                 queue.async {
-                    failure?(NetworkError(.invalidableJSON))
+                    failure?(NetworkError(.invalidableJSON).providerMap())
                 }
                 return
             }
             do {
                 let data = try JSONSerialization.data(withJSONObject: value)
-                let decoder = JSONDecoder()
-                let formatter = DateFormatter()
-                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                decoder.dateDecodingStrategy = .formatted(formatter)
                 let result = try decoder.decode(T.self, from: data)
                 queue.async {
                     success?(result)
                 }
             } catch {
                 queue.async {
-                    failure?(error)
+                    failure?(error.providerMap())
                 }
             }
         }, failure: { error in
-            log.error(error)
+            print(error)
             queue.async {
-                failure?(error)
+                failure?(error.providerMap())
             }
         }, ignoreCancel: ignoreCancel)
     }
@@ -289,32 +276,19 @@ extension MoyaError: CustomStringConvertible {
     }
 }
 
+
+extension Error {
+    func providerMap() -> Error {
+        return NetworkProvider.shared.failureMap(self)
+    }
+}
+
 public extension Error {
     var asMoyaError: MoyaError? {
         self as? MoyaError
     }
 
-    var asNetworkError: NetworkError? {
-        self as? NetworkError
-    }
-
-    var isNoLogin: Bool {
-        if let moyaError = asMoyaError, case let MoyaError.underlying(_error, _) = moyaError, let error = _error.asNetworkError {
-            return error.code == .noLogin
-        }
-        if let error = asNetworkError {
-            return error.code == .noLogin
-        }
-        return false
-    }
-    
-    var isNoBindingPhone: Bool {
-        if let moyaError = asMoyaError, case let MoyaError.underlying(_error, _) = moyaError, let error = _error.asNetworkError {
-            return error.code == .noBindingPhone
-        }
-        if let error = asNetworkError {
-            return error.code == .noBindingPhone
-        }
-        return false
+    var asNetworkError: NetworkErrorCompatical? {
+        self as? NetworkErrorCompatical
     }
 }

@@ -36,7 +36,5 @@ Pod::Spec.new do |s|
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   s.dependency "Moya"
-  s.dependency "YQLogger"
   s.dependency 'Cache'
-  s.dependency 'XTToast'
 end

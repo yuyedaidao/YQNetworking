@@ -37,6 +37,7 @@
 		5526C11525E7B9290095A819 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		5526C11625E7B9CE0095A819 /* ResponseValidatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseValidatable.swift; sourceTree = "<group>"; };
 		5593919E25E89432008BAB27 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		55A068692797E3D30046B350 /* ResponseDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseDecodable.swift; sourceTree = "<group>"; };
 		55CA521C25FB0E2300652721 /* ResponseCacheable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseCacheable.swift; sourceTree = "<group>"; };
 		55CE3C51286DAC3C3A5D20FF /* Pods_YQNetworking_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YQNetworking_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD01AFB9204008FA782 /* YQNetworking_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YQNetworking_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,7 +82,6 @@
 			isa = PBXGroup;
 			children = (
 				5526C0CB25E77E470095A819 /* Classes */,
-				5526C0CE25E77E470095A819 /* Assets */,
 			);
 			name = YQNetworking;
 			path = ../YQNetworking;
@@ -94,17 +94,11 @@
 				5526C10425E7B2D20095A819 /* NetworkProvider.swift */,
 				5526C11525E7B9290095A819 /* NetworkError.swift */,
 				5526C11625E7B9CE0095A819 /* ResponseValidatable.swift */,
+				55A068692797E3D30046B350 /* ResponseDecodable.swift */,
 				5502BD5F25F6032500259071 /* RequestMockable.swift */,
 				55CA521C25FB0E2300652721 /* ResponseCacheable.swift */,
 			);
 			path = Classes;
-			sourceTree = "<group>";
-		};
-		5526C0CE25E77E470095A819 /* Assets */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Assets;
 			sourceTree = "<group>";
 		};
 		607FACC71AFB9204008FA782 = {
@@ -335,18 +329,14 @@
 				"${PODS_ROOT}/Target Support Files/Pods-YQNetworking_Example/Pods-YQNetworking_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Cache/Cache.framework",
-				"${BUILT_PRODUCTS_DIR}/Logging/Logging.framework",
 				"${BUILT_PRODUCTS_DIR}/Moya/Moya.framework",
-				"${BUILT_PRODUCTS_DIR}/YQLogger/YQLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/YQNetworking/YQNetworking.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cache.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Logging.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Moya.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YQLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YQNetworking.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

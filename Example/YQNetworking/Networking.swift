@@ -12,19 +12,36 @@ import YQNetworking
 
 enum Network {
     case login
+    case model
 }
 
 extension Network: RequestTarget {
     var baseURL: URL {
-        return URL(string: "http://iqilu.shandian8.com")!
+        switch self {
+        case .login:
+            return URL(string: "http://iqilu.shandian8.com")!
+        case .model:
+            return URL(string: "https://api.apiopen.top")!
+        }
+        
     }
 
     var path: String {
-        return "/login"
+        switch self {
+        case .login:
+            return "/login"
+        case .model:
+            return "/singlePoetry"
+        }
     }
 
     var method: Moya.Method {
-        return .post
+        switch self {
+        case .login:
+            return .post
+        case .model:
+            return .get
+        }
     }
 
     var sampleData: Data {
@@ -39,20 +56,7 @@ extension Network: RequestTarget {
         return .requestPlain
     }
 
-//    var stubBehavior: StubBehavior {
-//        return .delayed(seconds: 5)
-//    }
-
-    func validateResponse(_ response: Response, dataOnly _: Bool) -> Result<Any?, MoyaError> {
-        do {
-            let response = try response.filter(statusCode: 200)
-            guard let value = try response.mapJSON() as? NetworkMap else {
-                let info = "解析数据失败"
-                return .failure(MoyaError.underlying(NetworkError(info), response))
-            }
-            return .success(value)
-        } catch {
-            return .failure(MoyaError.underlying(error, response))
-        }
+    var decoder: JSONDecoder {
+        return JSONDecoder()
     }
 }

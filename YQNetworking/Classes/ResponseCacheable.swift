@@ -23,7 +23,7 @@ public extension ResponseCacheable {
         do {
             return try Storage(diskConfig: config, memoryConfig: MemoryConfig(expiry: .never, countLimit: 10, totalCostLimit: 10), transformer: TransformerFactory.forData())
         } catch {
-            log.error(error)
+            print(error)
             return nil
         }
     }
@@ -40,7 +40,7 @@ public extension ResponseCacheable {
         do {
             try Self.storage?.setObject(data, forKey: cacheKey)
         } catch {
-            log.error(error)
+            print(error)
         }
     }
 
@@ -48,7 +48,7 @@ public extension ResponseCacheable {
         do {
             return try Self.storage?.object(forKey: cacheKey)
         } catch {
-            log.error(error)
+            print(error)
             return nil
         }
     }
