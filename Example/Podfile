@@ -2,7 +2,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 source 'https://gitee.com/padding/YQPods.git'
 
 use_frameworks!
-platform :ios, '10.0'
+platform :ios, '11.0'
 
 target 'YQNetworking_Example' do
   pod 'YQNetworking', :path => '../'

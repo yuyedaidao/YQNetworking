@@ -1,12 +1,12 @@
 PODS:
   - Alamofire (5.4.1)
-  - Cache (5.3.0)
+  - Cache (6.0.0)
   - Moya (14.0.0):
     - Moya/Core (= 14.0.0)
   - Moya/Core (14.0.0):
     - Alamofire (~> 5.0)
   - YQNetworking (0.1.0):
-    - Cache
+    - Cache (~> 6.0.0)
     - Moya
 
 DEPENDENCIES:
@@ -24,10 +24,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
-  Cache: 48762993ec44e1d93483c4d4a13edd18452326f4
+  Cache: 4ca7e00363fca5455f26534e5607634c820ffc2d
   Moya: 5b45dacb75adb009f97fde91c204c1e565d31916
-  YQNetworking: 63a214c65754ae5c1dd2a7f257bc934c895a15bf
+  YQNetworking: 1839f72a6b8219cf3b4034b6d924c9787a835d2a
 
-PODFILE CHECKSUM: 975a4cbbb75fc8d0d8a97c8a15ba483477a228b7
+PODFILE CHECKSUM: 83727901da9971f722c741c7935625f39c4a1a10
 
 COCOAPODS: 1.11.2

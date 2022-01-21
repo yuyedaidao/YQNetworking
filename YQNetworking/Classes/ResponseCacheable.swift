@@ -18,7 +18,7 @@ public protocol ResponseCacheable where Self: RequestTarget {
 }
 
 public extension ResponseCacheable {
-    static var storage: Storage<Data>? {
+    static var storage: Storage<AnyHashable, Data>? {
         let config = DiskConfig(name: "YQNetworking", expiry: .seconds(30 * 24 * 3600), maxSize: 50000, directory: nil, protectionType: .complete)
         do {
             return try Storage(diskConfig: config, memoryConfig: MemoryConfig(expiry: .never, countLimit: 10, totalCostLimit: 10), transformer: TransformerFactory.forData())
